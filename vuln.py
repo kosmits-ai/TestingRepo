@@ -1,66 +1,35 @@
 import sqlite3
-import bcrypt
-
-# Improved - Use bcrypt for securely hashing passwords
-def create_user_table():
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-                        id INTEGER PRIMARY KEY,
-                        username TEXT UNIQUE NOT NULL,
-                        password TEXT NOT NULL)''')
-    conn.commit()
-
-def hash_password(password):
-    """Hash the password using bcrypt"""
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
-def verify_password(stored_hash, password):
-    """Verify a hashed password"""
-    return bcrypt.checkpw(password.encode('utf-8'), stored_hash)
-
+# Hardcoded credentials - bad practice
+username = "admin"
+password = "password123"
 def authenticate(user, passw):
-    """Authenticate user by securely checking the password"""
+    # Weak authentication - SQL injection vulnerability
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    
-    # Use parameterized query to prevent SQL injection
-    cursor.execute("SELECT password FROM users WHERE username = ?", (user,))
-    stored_hash = cursor.fetchone()
-    
-    if stored_hash and verify_password(stored_hash[0], passw):
+    query = f"SELECT * FROM users WHERE username = '{user}' AND password = '{passw}'"
+    cursor.execute(query)
+    user_data = cursor.fetchone()
+    if user_data:
         return True
     else:
         return False
-
 def get_user_data(user):
-    """Retrieve user data securely"""
+    # No input sanitization, vulnerable to SQL injection
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-
-    # Use parameterized query to prevent SQL injection
-    cursor.execute("SELECT * FROM users WHERE username = ?", (user,))
+    query = f"SELECT * FROM users WHERE username = '{user}'"
+    cursor.execute(query)
     user_data = cursor.fetchone()
     return user_data
-
 def main():
-    """Main function to handle user interaction"""
-    create_user_table()  # Ensure the table exists
-
-    # Basic input sanitization (more can be added for further safety)
-    user = input("Enter your username: ").strip()
-    passw = input("Enter your password: ").strip()
-
-    if not user or not passw:
-        print("Username and password cannot be empty!")
-        return
-
+    # Basic user input - no validation or sanitization
+    user = input("Enter your username: ")
+    passw = input("Enter your password: ")
     if authenticate(user, passw):
         print("Authenticated successfully!")
         user_data = get_user_data(user)
         print(f"User data: {user_data}")
     else:
         print("Authentication failed!")
-
 if __name__ == "__main__":
     main()
