@@ -1,7 +1,7 @@
 import sqlite3
 # Hardcoded credentials - bad practice
 username = "admin"
-password = "password123"
+password = "pncnienvuw2949@!#@@#"
 def authenticate(user, passw):
     # Weak authentication - SQL injection vulnerability
     conn = sqlite3.connect('database.db')
