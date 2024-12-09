@@ -1,0 +1,9 @@
+Django==2.2.10          # Vulnerable to several issues, including SQL injection vulnerabilities
+flask==0.12.0           # Contains known vulnerabilities
+requests==2.18.4        # Vulnerable to SSL certificate validation bypass
+pyyaml==3.13            # Vulnerable to arbitrary code execution
+urllib3==1.22           # Vulnerable to security issues with SSL/TLS verification
+paramiko==2.4.2         # Vulnerable to remote code execution
+pycrypto==2.6.1         # Known vulnerabilities related to cryptographic weaknesses
+gunicorn==19.9.0        # Vulnerable to potential denial of service attack
+html5lib==0.9999999     # Vulnerable to DOM-based cross-site scripting
